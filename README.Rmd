@@ -7,13 +7,54 @@ output: github_document
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  cache = TRUE,
+  echo = FALSE,
+  message = FALSE
 )
+library(tidyverse)
 ```
 
-# historic-cycling-data
+# Historic cycling data
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of historic-cycling-data is to ...
+The goal of historic-cycling-data is to document available datasets on changes in cycling over time in Great Britain.
+The focus is on changes in recent years as part of the wider SATURN research project.
+
+```{r download-data-regional}
+u = "https://storage.googleapis.com/dft-statistics/road-traffic/downloads/data-gov-uk/region_traffic_by_vehicle_type.csv"
+f = basename(u)
+download.file(u, f)
+```
+
+## DfT Manual Counts
+
+DfT manual traffic count data is illustrated below.
+
+```{r}
+region_traffic_raw = read_csv(f)
+region_traffic_long = region_traffic_raw %>% 
+  group_by(year) %>% 
+  summarise(across(.cols = c(pedal_cycles, all_motor_vehicles), .fns = sum)) %>%
+  pivot_longer(cols = c(pedal_cycles, all_motor_vehicles))
+region_traffic_long %>% 
+  ggplot() +
+  geom_line(aes(year, value)) +
+  facet_grid(rows = vars(name), scales = "free")
+```
+
+
+
+```{r, eval=FALSE, echo=FALSE}
+# Test code
+# Check region data is complete:
+region_traffic_complete = region_traffic_raw %>% 
+  # select(year, id, region_id, pedal_cycles, all_motor_vehicles) %>% 
+  group_by(id) %>% 
+  filter(all(year %in% 1993:2020))
+nrow(region_traffic_complete)
+```
+
+
