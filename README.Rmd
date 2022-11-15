@@ -31,6 +31,8 @@ download.file(u, f)
 
 ## DfT Manual Counts
 
+test
+
 DfT manual traffic count data is illustrated below.
 
 ```{r}
@@ -45,8 +47,6 @@ region_traffic_long %>%
   facet_grid(rows = vars(name), scales = "free")
 ```
 
-
-
 ```{r, eval=FALSE, echo=FALSE}
 # Test code
 # Check region data is complete:
@@ -56,5 +56,3 @@ region_traffic_complete = region_traffic_raw %>%
   filter(all(year %in% 1993:2020))
 nrow(region_traffic_complete)
 ```
-
-
